@@ -1,0 +1,19 @@
+twilio:
+  account_sid: ACd891c21811e9506f802d7a811d120633
+  auth_token: 648c8f9a029d1ad93757415d10bb0387
+  trial_number: +17692248196
+mail:
+    host: smtp.gmail.com
+    port: 587
+    username: nurecommercesite@gmail.com
+    password: Fhasan451@        
+    protocol: smtp
+    tls: true
+    properties.mail.smtp:
+        auth: true
+        starttls.enable: true
+        ssl.trust: smtp.gmail.com
+jhipster:
+    mail: # specific JHipster mail property, for standard properties see MailProperties
+    from: nurecommercesite@gmail.com
+    base-url: http://127.0.0.1:8080
