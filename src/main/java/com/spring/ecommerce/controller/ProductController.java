@@ -91,6 +91,17 @@ public class ProductController {
 	public List<ProductDto> getProductBySubCategoryId(@PathVariable String id) {
 		return service.getProductBySubCategoryId(id);
 	}
+	
+	/*************************************************************************
+	 * Get List Product {@link Product} by Brand Id
+	 * 
+	 * @return {@link List<Product>}
+	 *************************************************************************/
+
+	@GetMapping("/getAllByBrand/{id}")
+	public List<ProductDto> getProductByBrandId(@PathVariable String id) {
+		return service.getProductByBrandId(id);
+	}
 
 	/*************************************************************************
 	 * Update {@link Product}

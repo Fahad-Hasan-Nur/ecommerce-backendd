@@ -2,6 +2,7 @@ package com.spring.ecommerce.service;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.spring.ecommerce.model.Product;
 import com.spring.ecommerce.model.Rating;
 
 /*************************************************************************
@@ -32,5 +33,13 @@ public interface RatingService {
 	 * 
 	 * @return  Rating
 	 *************************************************************************/
-	int getRatingByUserAndProduct(String pId, String uId);
+	Rating getRatingByUserAndProduct(String pId, String uId);
+	/*************************************************************************
+	 * Update {@link Rating}
+	 * 
+	 * @param ob {@link Rating} object
+	 * @param rs
+	 * @return {@link Rating}
+	 *************************************************************************/
+	Rating update(Rating ob);
 }

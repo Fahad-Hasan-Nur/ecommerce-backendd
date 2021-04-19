@@ -47,6 +47,10 @@ public class Product extends AbstractPersistableEntity{
 			@Transient
 			private String brandName;
 			
+			private String description;
+			
+			private int rating;
+			
 			@ManyToOne
 			@JoinColumn(name = "category_id",referencedColumnName = "id")
 			@JsonIgnore

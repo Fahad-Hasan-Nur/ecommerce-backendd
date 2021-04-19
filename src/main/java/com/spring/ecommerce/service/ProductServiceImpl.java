@@ -103,6 +103,16 @@ public class ProductServiceImpl implements ProductService {
 		return productRepo.findAllBySubCategory(typeRepo.findById(id).orElse(null))
 				.stream().map(this::getProjectDtoFromEntity).collect(Collectors.toList());
 	}
+	
+	/*************************************************************************
+	 * Get Product {@link Product} by Brand Id
+	 * 
+	 * @return {@link Product}
+	 *************************************************************************/
+	public List<ProductDto> getProductByBrandId(String id) {
+		return productRepo.findAllByBrand(brandRepo.findById(id).orElse(null))
+				.stream().map(this::getProjectDtoFromEntity).collect(Collectors.toList());
+	}
 
 	/*************************************************************************
 	 * Update {@link Product}

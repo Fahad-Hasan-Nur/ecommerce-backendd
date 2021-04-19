@@ -88,7 +88,7 @@ public class AuthController {
 	 * @return {@link String}
 	 *************************************************************************/
 	@GetMapping("/confirm-account/{token}")
-	public User confirmUserAccount(@PathVariable String token) {
+	public ResponseEntity<?> confirmUserAccount(@PathVariable String token) {
 		return service.confirmUserAccount(token);
 	}
 }

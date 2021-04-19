@@ -7,11 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spring.ecommerce.model.Product;
 import com.spring.ecommerce.model.Rating;
 import com.spring.ecommerce.service.RatingService;
 
@@ -39,8 +41,18 @@ public class RatingController {
 	 * @return {@link Rating}
 	 *************************************************************************/
 	@PostMapping
-	public Rating addBrand(@RequestBody Rating rating) {
+	public Rating addRating(@RequestBody Rating rating) {
 		return service.create(rating);
+	}
+	/*************************************************************************
+	 * Update {@link Rating}
+	 * 
+	 * @param ob {@link Rating} object
+	 * @return {@link Rating}
+	 *************************************************************************/
+	@PutMapping
+	public Rating update(@RequestBody Rating ob) {
+		return service.update(ob);
 	}
 
 	/*************************************************************************
@@ -62,7 +74,7 @@ public class RatingController {
 	 * @return  Rating
 	 *************************************************************************/
     @GetMapping("/getRating")
-    public int getRating(@RequestParam String pId, @RequestParam String uId) {
+    public Rating getRating(@RequestParam String pId, @RequestParam String uId) {
     	return service.getRatingByUserAndProduct(pId, uId);
     }
 

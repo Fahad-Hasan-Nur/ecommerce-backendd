@@ -24,6 +24,8 @@ public interface UserRepo extends JpaRepository<User, String> {
 
 	User findByEmailAndActiveAndVerified(String email, boolean b, boolean c);
 
+	User findByphoneNumberIgnoreCase(String phoneNumber);
+
 
 
 

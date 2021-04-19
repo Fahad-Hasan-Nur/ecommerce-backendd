@@ -22,6 +22,8 @@ public interface ProductRepo extends JpaRepository<Product,String>{
 
 	List<Product> findByBrand(Brand ob);
 
+	List<Product> findAllByBrand(Brand orElse);
+
 	
 
 }

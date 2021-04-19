@@ -4,11 +4,14 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.spring.ecommerce.model.Product;
 import com.spring.ecommerce.model.Rating;
+import com.spring.ecommerce.repository.ProductRepo;
 import com.spring.ecommerce.repository.RatingRepo;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 public class RatingServiceImpl implements RatingService {
 
 	private final RatingRepo ratingRepo;
+	private final ProductRepo productRepo;
+
 
 	/*************************************************************************
 	 * Create a new Rating
@@ -37,6 +42,8 @@ public class RatingServiceImpl implements RatingService {
 	@Override
 	public Rating create(Rating ob) {
 		try {
+			ratingRepo.save(ob);
+			updateProductAvgRating(ob.getProductId());
 			return ratingRepo.save(ob);
 		} catch (Exception e) {
 			log.warn("Failed to create  Product: ", e);
@@ -70,8 +77,42 @@ public class RatingServiceImpl implements RatingService {
 	 * @return Rating
 	 *************************************************************************/
 	@Override
-	public int getRatingByUserAndProduct(String pId, String uId) {
-		return ratingRepo.getByProductIdAndUserId(pId, uId).getRatingValue();
+	public Rating getRatingByUserAndProduct(String pId, String uId) {
+		return ratingRepo.getByProductIdAndUserId(pId, uId);
+	}
+	/*************************************************************************
+	 * Update {@link Rating}
+	 * 
+	 * @param ob {@link Rating} object
+	 * @return {@link Rating}
+	 *************************************************************************/
+	@Override
+	public Rating update(Rating ob) {
+		try {
+			Rating existingRating = ratingRepo.findById(ob.getId()).orElse(null);
+			BeanUtils.copyProperties(ob, existingRating);
+			ratingRepo.save(existingRating);
+			updateProductAvgRating(ob.getProductId());
+			return ob;
+			
+		} catch (Exception e) {
+			log.warn("Failed to update  Rating: ", e);
+			return ob;
+		}
+	}
+	
+	public void updateProductAvgRating(String id){
+		int avg=0;
+		int c=0;
+		Product existingProduct = productRepo.findById(id).orElse(null);
+		List<Rating> rating =ratingRepo.getByProductId(id);
+		for(Rating ob :rating) {
+			avg=avg+ob.getRatingValue();
+			c++;
+		}
+		avg=avg/c;
+		existingProduct.setRating(avg);
+		productRepo.save(existingProduct);
 	}
 
 }

@@ -1,10 +1,13 @@
 package com.spring.ecommerce.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.spring.ecommerce.email.EmailService;
+import com.spring.ecommerce.email.MailRequest;
 import com.spring.ecommerce.emailConfirmation.ConfirmationToken;
 import com.spring.ecommerce.emailConfirmation.ConfirmationTokenRepo;
 import com.spring.ecommerce.emailConfirmation.EmailConfig;
@@ -49,11 +54,14 @@ public class AuthServiceImpl implements AuthService {
 	@Autowired
 	private ConfirmationTokenRepo tokenRepo;
 	@Autowired
-	EmailConfig emailService;
+	EmailConfig emaiConfig;
 	@Autowired
 	ImageRepo imageRepo;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	@Autowired
+	private EmailService emailService;
+
 
 	/*************************************************************************
 	 * Create a new User
@@ -64,16 +72,48 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public ResponseEntity<?> create(User user) {
 		User existingUser = userRepo.findByEmailIgnoreCase(user.getEmail());
+		User existingUserPhone = userRepo.findByphoneNumberIgnoreCase(user.getPhoneNumber());
+
 		if (existingUser != null) {
-			return ResponseEntity.ok("User exists!!!");
-		} else {
+			log.warn("Failed to create  User: ");
+			 return new ResponseEntity<>(
+				      "Email already registered...!!", 
+				      HttpStatus.OK);
+		}else if(existingUserPhone!=null) {
+			log.warn("Failed to create  User: ");
+			 return new ResponseEntity<>(
+				      "Phone number already registered...!!", 
+				      HttpStatus.OK);
+		}
+		else {
 			try {
 				user.setType("user");
 				user.setPassword(passwordEncoder.encode(user.getPassword()));
-				user.setImage(imageRepo.findById(user.getImageId()).orElse(null));
+				if(user.getImageId()!=null) {
+					user.setImage(imageRepo.findById(user.getImageId()).orElse(null));
+				}
+				if(user.getRole().equals("USER")) {
+					user.setVerified(true);
+				}
 				ConfirmationToken confirmationToken = new ConfirmationToken(user);
 				userRepo.save(user);
 				tokenRepo.save(confirmationToken);
+
+				if(user.getRole().equals("USER")) {
+					user.setVerified(true);
+					ConfirmationToken token=tokenRepo.findByUser(user);
+					MailRequest ob=new MailRequest();
+					ob.setFrom("nurecommercesite@gmail.com");
+					ob.setTo(user.getEmail());
+					ob.setName("Admin");
+					ob.setSubject("Confirmation Email");
+					Map<String, Object> model = new HashMap<>();
+					model.put("Name", user.getName());
+					model.put("token", token.getConfirmationToken());
+					emailService.sendEmail(ob, model,"email-user-activate.ftl");
+					log.warn("Email Send " );
+
+				}
 			} catch (Exception e) {
 				log.warn("Failed to create  User: ", e);
 				return ResponseEntity.ok("Failed to create  User ");
@@ -94,15 +134,17 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public ResponseEntity<?> createTokenForUser(AuthenticationRequest authenticationRequest) throws Exception {
 
-		final User user = userRepo.findByEmailAndActive(authenticationRequest.getEmail(), true);
+		final User user = userRepo.findByEmail(authenticationRequest.getEmail());
 		if (user == null) {
-			return ResponseEntity.ok("User is Not Activated Yet");
+			return ResponseEntity.ok("No user found With given email..!!");
+		}else if(userRepo.findByEmailAndActive(authenticationRequest.getEmail(), true)==null){
+			return ResponseEntity.ok("Account is not activated Yet...Chack mailbox for verification email.");
 		}
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(),
 					authenticationRequest.getPassword()));
 		} catch (BadCredentialsException e) {
-			throw new Exception("Incorrect Email Or Pasword.", e);
+			return ResponseEntity.ok("Incorrect Password..!!!");
 		}
 		final UserDetails userDetails = service.loadUserByUsername(authenticationRequest.getEmail());
 
@@ -120,16 +162,16 @@ public class AuthServiceImpl implements AuthService {
 	 * @return {@link String}
 	 *************************************************************************/
 	@Override
-	public User confirmUserAccount(String token) {
+	public ResponseEntity<?> confirmUserAccount(String token) {
 		ConfirmationToken cToken = tokenRepo.findByConfirmationToken(token);
 		if (cToken != null) {
 			User user = userRepo.findByEmailIgnoreCase(cToken.getUser().getEmail());
 			user.setActive(true);
 			userRepo.save(user);
 			tokenRepo.delete(cToken);
-			return user;
+			return ResponseEntity.ok(new User());
 		} else {
-			return null;
+			return ResponseEntity.ok("Error");
 		}
 	}
 	

@@ -11,6 +11,7 @@ public interface RatingRepo extends JpaRepository<Rating, String> {
 
 	List<Rating> findAllByProductId(String pId);
 	Rating getByProductIdAndUserId(String pId, String uId);
+	List<Rating> getByProductId(String id);
 
 
 }
