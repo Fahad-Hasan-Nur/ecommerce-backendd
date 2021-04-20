@@ -31,6 +31,13 @@ public interface ProductService {
 	 * @return {@link List<Product>}
 	 *************************************************************************/
 	List<ProductDto> getAllProducts();
+	
+	/*************************************************************************
+	 * Get all {@link Product} by filtedName
+	 * 
+	 * @return {@link List<Product>}
+	 *************************************************************************/
+	List<ProductDto> getAllProductByFilteredName(String name);
 
 	/*************************************************************************
 	 * Get all {@link Product} by isActive Flag

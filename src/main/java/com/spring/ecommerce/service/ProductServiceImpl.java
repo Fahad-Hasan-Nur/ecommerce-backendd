@@ -73,6 +73,16 @@ public class ProductServiceImpl implements ProductService {
 	public List<ProductDto> getAllProducts() {
 		return productRepo.findAll().stream().map(this::getProjectDtoFromEntity).collect(Collectors.toList());
 	}
+	
+	/*************************************************************************
+	 * Get all Product {@link Product} by filterde name
+	 * 
+	 * @return {@link Product}
+	 *************************************************************************/
+	@Override
+	public List<ProductDto> getAllProductByFilteredName(String name) {
+		return productRepo.filterByName(name).stream().map(this::getProjectDtoFromEntity).collect(Collectors.toList());
+	}
 
 	/*************************************************************************
 	 * Get all Product {@link Product} by isActive flag
@@ -113,6 +123,8 @@ public class ProductServiceImpl implements ProductService {
 		return productRepo.findAllByBrand(brandRepo.findById(id).orElse(null))
 				.stream().map(this::getProjectDtoFromEntity).collect(Collectors.toList());
 	}
+	
+	
 
 	/*************************************************************************
 	 * Update {@link Product}

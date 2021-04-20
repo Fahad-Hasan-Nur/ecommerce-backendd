@@ -59,6 +59,16 @@ public class ProductController {
 	public List<ProductDto> getAllProduct() {
 		return service.getAllProducts();
 	}
+	
+	/*************************************************************************
+	 * Get  Product {@link Product} by filtered name
+	 * 
+	 * @return {@link List< Product>}
+	 *************************************************************************/
+	@GetMapping("/getAllByfilteredName/{name}")
+	public List<ProductDto> getAllProductByFilteredName(@PathVariable String name) {
+		return service.getAllProductByFilteredName(name);
+	}
 
 	/*************************************************************************
 	 * Get all active {@link Product}

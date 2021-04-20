@@ -60,9 +60,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         		.antMatchers("/api/brand/getAll").permitAll()
         		.antMatchers("/api/subCategory/getAll/{id}").permitAll()
         		.antMatchers("/api/product/getAllBySubCategory/{id}").permitAll()
+        		.antMatchers("/api/product/getAllByfilteredName/{id}").permitAll()
         		.antMatchers("/api/product/getAllVariation/{id}").permitAll()
            		.antMatchers("/api/product/getAllBySubCategory/{id}").permitAll()
            		.antMatchers("/api/product/getAllByBrand/{id}").permitAll()
+        		.antMatchers("/api/product/{id}").permitAll()
            		//Test......Test
            		
 //        		.antMatchers("/api/image/**").permitAll()
