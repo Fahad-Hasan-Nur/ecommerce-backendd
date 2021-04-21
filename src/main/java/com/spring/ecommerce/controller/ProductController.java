@@ -157,6 +157,17 @@ public class ProductController {
 	public List<ProductVariation> getVariationByProductId(@PathVariable String id) {
 		return service.getVariationByProductId(id);
 	}
+	
+	/*************************************************************************
+	 * Get  Variation {@link ProductVariation} by  id
+	 * 
+	 * @return {@link Variation}
+	 *************************************************************************/
+
+	@GetMapping("/getVariation/{id}")
+	public ProductVariation getVariationById(@PathVariable String id) {
+		return service.getVariationById(id);
+	}
 	/*************************************************************************
 	 * Update {@link ProductVariation}
 	 * 

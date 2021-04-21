@@ -194,6 +194,16 @@ public class ProductServiceImpl implements ProductService {
 	}
 	
 	/*************************************************************************
+	 * Get  Variation {@link ProductVariation} by  id
+	 * 
+	 * @return {@link ProductVariation}
+	 *************************************************************************/
+	@Override
+	public ProductVariation getVariationById(String id) {
+		return variationRepo.findById(id).orElse(null);
+	}
+	
+	/*************************************************************************
 	 * Update {@link ProductVariation}
 	 * 
 	 * @param ob {@link ProductVariation} object

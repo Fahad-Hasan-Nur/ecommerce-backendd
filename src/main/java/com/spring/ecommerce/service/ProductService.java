@@ -101,6 +101,13 @@ public interface ProductService {
 	List<ProductVariation> getVariationByProductId(String id);
 	
 	/*************************************************************************
+	 * Get Variation {@link ProductVariation} by  id
+	 * 
+	 * @return {@link ProductVariation}
+	 *************************************************************************/
+	ProductVariation getVariationById(String id);
+	
+	/*************************************************************************
 	 * Update {@link ProductVariation}
 	 * 
 	 * @param ob {@link ProductVariation} object
