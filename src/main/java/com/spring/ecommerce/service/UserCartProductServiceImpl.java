@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.web.bind.annotation.GetMapping;
 
 import com.spring.ecommerce.model.UserCartProduct;
 import com.spring.ecommerce.repository.ProductRepo;
@@ -78,6 +78,17 @@ public class UserCartProductServiceImpl implements UserCartProductService {
 		return repo.findAllByUserAndStatus(userRepo.findById(id).orElse(null),"CART").stream()
 				.map(this::getData).collect(Collectors.toList());
 	}
+	
+	/*************************************************************************
+	 * Get UserCartProduct {@link UserCartProduct} by order id
+	 * 
+	 * @return {@link UserCartProduct}
+	 *************************************************************************/
+
+	 public List<UserCartProduct> getByOrder( String id){
+		 return repo.findAllByOrderId(id).stream()
+					.map(this::getData).collect(Collectors.toList());
+	 }
 
 	/*************************************************************************
 	 * Update {@link UserCartProduct}
@@ -114,6 +125,18 @@ public class UserCartProductServiceImpl implements UserCartProductService {
 			log.warn("Failed to delete  UserCartProduct: ", e);
 			return new ResponseEntity<>("Unsccecfull.....!!!!!!!!!.", HttpStatus.BAD_REQUEST);
 		}
+	}
+	/*************************************************************************
+	 * Update UserCartProduct status {@link UserCartProduct} by id
+	 * 
+	 * @return {@link UserCartProduct}
+	 *************************************************************************/
+
+	public UserCartProduct orderProduct( UserCartProduct ob) {
+		UserCartProduct existingOb=repo.findById(ob.getId()).orElse(null);
+		existingOb.setStatus("ORDERED");
+		existingOb.setOrderId(ob.getOrderId());
+		return repo.save(existingOb);
 	}
 //
 //	/*************************************************************************

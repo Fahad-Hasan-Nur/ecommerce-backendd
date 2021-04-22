@@ -81,6 +81,28 @@ public class UserTransactionController {
 	public List<UserCartProduct> getUserCartProductByOnCart(@PathVariable String id) {
 		return service.getUserCartProductByOnCart(id);
 	}
+	
+	/*************************************************************************
+	 * Get UserCartProduct {@link UserCartProduct} by order id
+	 * 
+	 * @return {@link UserCartProduct}
+	 *************************************************************************/
+
+	@GetMapping("/getByOrder/{id}")
+	public List<UserCartProduct> getByOrder(@PathVariable String id) {
+		return service.getByOrder(id);
+	}
+	
+	/*************************************************************************
+	 * Update UserCartProduct status {@link UserCartProduct} by id
+	 * 
+	 * @return {@link UserCartProduct}
+	 *************************************************************************/
+
+	@PutMapping("/orderProduct")
+	public UserCartProduct orderProduct(@RequestBody UserCartProduct ob) {
+		return service.orderProduct(ob);
+	}
 //	
 //	/*************************************************************************
 //	 * Get Requisition {@link Requisition} by Status

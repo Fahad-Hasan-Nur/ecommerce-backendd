@@ -4,6 +4,8 @@ package com.spring.ecommerce.service;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.spring.ecommerce.model.UserCartProduct;
 
@@ -22,12 +24,13 @@ public interface UserCartProductService {
 	 *************************************************************************/
 	UserCartProduct create(UserCartProduct ob);
 
-//	/*************************************************************************
-//	 * Get all {@link Requisition}
-//	 * 
-//	 * @return {@link List<Requisition>}
-//	 *************************************************************************/
-//	List<RequisitionDto> getAllRequisitions();
+	/*************************************************************************
+	 * Update UserCartProduct status {@link UserCartProduct} by id
+	 * 
+	 * @return {@link UserCartProduct}
+	 *************************************************************************/
+
+	 UserCartProduct orderProduct( UserCartProduct ob);
 
 	/*************************************************************************
 	 * Get UserCartProduct {@link UserCartProduct} by Id
@@ -42,14 +45,13 @@ public interface UserCartProductService {
 	 * @return {@link UserCartProduct}
 	 *************************************************************************/
 	List<UserCartProduct> getUserCartProductByOnCart(String id);
-//
-//	/*************************************************************************
-//	 * Get Requisition {@link Requisition} by Status
-//	 * 
-//	 * @return {@link Requisition}
-//	 *************************************************************************/
-//	List<RequisitionDto> getRequisitionByStatus(String status);
-//
+	/*************************************************************************
+	 * Get UserCartProduct {@link UserCartProduct} by order id
+	 * 
+	 * @return {@link UserCartProduct}
+	 *************************************************************************/
+	 List<UserCartProduct> getByOrder( String id);
+
 	/*************************************************************************
 	 * Update {@link UserCartProduct}
 	 * 

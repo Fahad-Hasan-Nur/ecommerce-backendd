@@ -72,5 +72,8 @@ public class UserCartProduct extends AbstractPersistableEntity {
 	@Column(nullable = false)
 	@NotNull
 	private String status;
+	
+	private String orderId;
+
 
 }

@@ -15,4 +15,6 @@ public interface UserCartProductRepo extends JpaRepository<UserCartProduct, Stri
 
 	List<UserCartProduct> findAllByUserAndStatus(User orElse, String string);
 
+	List<UserCartProduct> findAllByOrderId(String id);
+
 }
