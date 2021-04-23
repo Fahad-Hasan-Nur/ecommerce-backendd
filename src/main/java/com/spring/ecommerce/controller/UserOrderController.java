@@ -5,10 +5,13 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,6 +59,16 @@ public class UserOrderController {
 	public List<UserOrder> getAll() {
 		return service.getAll();
 	}
+	
+	/*************************************************************************
+	 * Get all UserOrder {@link UserOrder} by status
+	 * 
+	 * @return {@link List< UserOrder>}
+	 *************************************************************************/
+	@GetMapping("/getByStatus/{status}")
+	public List<UserOrder> getByStatus(@PathVariable String status) {
+		return service.getByStatus(status);
+	}
 
 	/*************************************************************************
 	 * Get UserOrder {@link UserOrder} by Id
@@ -77,5 +90,26 @@ public class UserOrderController {
 	@GetMapping("/getByUserId/{id}")
 	public List<UserOrder> getByUserId(@PathVariable String id) {
 		return service.getByUserId(id);
+	}
+	
+	/*************************************************************************
+	 * Update {@link UserOrder Status}
+	 * 
+	 * @param ob {@link UserOrder} object
+	 * @return {@link UserOrder}
+	 *************************************************************************/
+	@PutMapping
+	public UserOrder update(@RequestBody UserOrder ob) {
+		return service.update(ob);
+	}
+	/*************************************************************************
+	 * Delete {@link UserOrder}
+	 * 
+	 * @param ob {@link UserOrder} object
+	 * @return {@link UserOrder}
+	 *************************************************************************/
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> delete(@PathVariable String id) {
+		return service.delete(id);
 	}
 }
