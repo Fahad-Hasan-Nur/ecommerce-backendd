@@ -45,7 +45,12 @@
 			<groupId>com.twilio.sdk</groupId>
 			<artifactId>twilio</artifactId>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>org.apache.mahout</groupId>
+			<artifactId>mahout-core</artifactId>
+			<version>0.9</version>
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/jstl/jstl -->
 		<dependency>
