@@ -58,7 +58,7 @@ public class RecommendationServiceImpl implements RecommendationService {
 	 *************************************************************************/
 
 	public List<ProductDto> getItemBasedRecommendedProduct(String productId) throws IOException, TasteException {
-		createDataset();
+		createDataset("ITEM_BASED",productId);
 		return itemBasedRecommendation(productId);
 	}
 
@@ -73,7 +73,7 @@ public class RecommendationServiceImpl implements RecommendationService {
 
 	public List<ProductDto> getUserBasedRecommendedProduct(String userId)
 			throws NumberFormatException, TasteException, IOException {
-		createDataset();
+		createDataset("USER_BASED",userId);
 		return userBasedRecommendation(userId);
 	}
 	
@@ -91,7 +91,7 @@ public class RecommendationServiceImpl implements RecommendationService {
 		DataModel dataModel = new FileDataModel(file);
 		ItemSimilarity sim = new LogLikelihoodSimilarity(dataModel);
 		GenericItemBasedRecommender rec = new GenericItemBasedRecommender(dataModel, sim);
-		List<RecommendedItem> recommendations = rec.mostSimilarItems(makeUuid(productId).getMostSignificantBits(), 5);
+		List<RecommendedItem> recommendations = rec.mostSimilarItems(makeUuid(productId).getLeastSignificantBits(), 5);
 		for (RecommendedItem recommendation : recommendations) {
 			long id = recommendation.getItemID();
 			productList.add(getProductById(id));
@@ -124,8 +124,8 @@ public class RecommendationServiceImpl implements RecommendationService {
 		recommender = new GenericUserBasedRecommender(model, neighberhood, similarity);
 
 		List<RecommendedItem> recommenderItem;
-		recommenderItem = recommender.recommend(makeUuid(userId).getMostSignificantBits(), 5);
-
+		recommenderItem = recommender.recommend(makeUuid(userId).getLeastSignificantBits(), 5);
+		System.out.println(recommenderItem);
 		for (RecommendedItem r : recommenderItem) {
 			long productId = r.getItemID();
 			productList.add(getProductById(productId));
@@ -151,8 +151,25 @@ public class RecommendationServiceImpl implements RecommendationService {
 		return obj;
 	}
 
-	private void createDataset() throws IOException {
-		List<Rating> rating = ratingRepo.findAll();
+	private void createDataset(String type,String id) throws IOException {
+		if(type.equals("ITEM_BASED")) {
+			List<Rating> ratings = ratingRepo.findAll();
+			Product product=productRepo.findById(id).orElse(null);
+			List<Rating> rating = new ArrayList<>();
+			for(Rating ob: ratings) {
+				Product pr=productRepo.findById(ob.getProductId()).orElse(null);
+				if(pr.getCategory()==product.getCategory()) {
+					rating.add(ob);
+				}
+			}
+			dataset(rating);
+		}else {
+			List<Rating> rating = ratingRepo.findAll();
+			dataset(rating);
+		}
+
+	}
+	private void dataset(List<Rating> rating) throws IOException {
 		BufferedWriter wr = new BufferedWriter(new FileWriter("data/data.csv"));
 		for (Rating ob : rating) {
 			UUID idUser = makeUuid(ob.getUserId());
@@ -161,14 +178,14 @@ public class RecommendationServiceImpl implements RecommendationService {
 			UUID idProduct = makeUuid(ob.getProductId());
 			long msbP = idProduct.getMostSignificantBits();
 			long lsbP = idProduct.getLeastSignificantBits();
-			wr.write(msbU + "," + msbP + "," + ob.getRatingValue() + "\n");
-			idBuilder.put(String.valueOf(msbU),String.valueOf(lsbU));
-			idBuilder.put(String.valueOf(msbP),String.valueOf(lsbP));
+			wr.write(lsbU + "," + lsbP + "," + ob.getRatingValue() + "\n");
+			idBuilder.put(String.valueOf(lsbU),String.valueOf(msbU));
+			idBuilder.put(String.valueOf(lsbP),String.valueOf(msbP));
 
 		}
 		wr.close();
-
 	}
+	
 
 	private ProductDto getProductById(long id) {
 		String productId = getProductIdFromDataSet(id);
@@ -181,9 +198,9 @@ public class RecommendationServiceImpl implements RecommendationService {
 		return uuid;
 	}
 	
-	private String getProductIdFromDataSet(long msb) {
-		String lsb=idBuilder.get(String.valueOf(msb));
-		UUID ob=new UUID(msb, Long.parseLong(lsb));
+	private String getProductIdFromDataSet(long lsb) {
+		String msb=idBuilder.get(String.valueOf(lsb));
+		UUID ob=new UUID( Long.parseLong(msb),lsb);
 		return ob.toString().replace("-", "");
 	}
 

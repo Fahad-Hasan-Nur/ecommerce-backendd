@@ -12,7 +12,7 @@ import com.spring.ecommerce.model.UserOrder;
 
 public interface UserOrderRepo extends JpaRepository<UserOrder, String>{
 
-	List<UserOrder> findAllByUser(User findById);
+	List<UserOrder> findAllByUserOrderByCreatedAtDesc(User findById);
 
 	List<UserOrder> findAllByStatus(String status);
 

@@ -88,7 +88,7 @@ public class UserOrderServiceImpl implements UserOrderService {
 	 *************************************************************************/
 
 	public List<UserOrder> getByUserId(String id) {
-		return repo.findAllByUser(userRepo.findById(id).orElse(null)).stream().map(this::getData)
+		return repo.findAllByUserOrderByCreatedAtDesc(userRepo.findById(id).orElse(null)).stream().map(this::getData)
 				.collect(Collectors.toList());
 	}
 

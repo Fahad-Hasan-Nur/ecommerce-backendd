@@ -190,13 +190,14 @@ public class AuthServiceImpl implements AuthService {
 		}
 		final User admin = userRepo.findByEmailAndActiveAndVerified(authenticationRequest.getEmail(), true,true);
 		if (admin == null) {
-			return ResponseEntity.ok("Admin  dont Exist...");
+			return ResponseEntity.ok("Admin  don't Exist...");
 		}
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(),
 					authenticationRequest.getPassword()));
 		} catch (BadCredentialsException e) {
-			throw new Exception("Incorrect Email Or Pasword.", e);
+			return ResponseEntity.ok("Incorrect Password..!!!");
+			
 		}
 		final UserDetails userDetails = service.loadUserByUsername(authenticationRequest.getEmail());
 
